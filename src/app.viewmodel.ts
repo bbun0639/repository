@@ -1,4 +1,7 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import ProductAPI from "./product/product-api";
+import ProductMOCK from "./product/product-mock";
+import ProductRepository from "./product/product-repository";
 import Product from "./product/product.model";
 
 const useViewModel = () => {
@@ -22,6 +25,19 @@ const useViewModel = () => {
     ],
     []
   );
+
+  useEffect(() => {
+    // const productAPI = new ProductAPI();
+    const productMOCK = new ProductMOCK();
+    const productRepository = new ProductRepository(productMOCK);
+
+    const subscription = productRepository.getProducts().subscribe((data) => {
+      // setProducts(data.product);
+    });
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   return { products, currentTab, setCurrentTab, tabs };
 };
